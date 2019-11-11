@@ -1,39 +1,20 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import models from './models';
-import routes from './routes';
+import user_router from './routes/user';
 
+const router = express.Router();
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-
-
-var mysql = require('mysql')
-var connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'school'
+router.get('/', function (req, res, next) {
+  res.send('Welcome to the Kushy API');
 });
-connection.connect();
-connection.query('SELECT * FROM student', function (err, rows, fields) {
-    if (err) throw err
-    console.log('The solution is: ', rows)
-  })
-  
-  connection.end()
 
-app.use((req, res, next) => {
-    req.context = {
-        models,
-        me: models.users[1],
-    };
-    next();
-});
-app.use('/users', routes.user);
+
+app.use('/users',user_router(router))
 
 app.listen(process.env.PORT, () => {
     console.log(`port works ${process.env.PORT}`);
